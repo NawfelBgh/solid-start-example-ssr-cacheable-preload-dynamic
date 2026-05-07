@@ -68,8 +68,6 @@ This repo contains 2 versions:
 
 - The component [HttpHeader](https://docs.solidjs.com/solid-start/reference/server/http-header) does not set page headers, neither in dev (`npm run dev`) nor in production mode (`npm run preview`).
 
-- The [catch-all route](src/routes/(layout)/[[...404]].tsx), defined inside the `(layout)` directory, works correctly for `/non-existent` but not for `/posts/2/non-existent`.
-
 - When the server is just started, if we visit `/posts/1`, the HTML contains twice the preload link tag with `rel="preload" href="/api/user"` and the preload for `/api/post/1/like` is absent. On subsequent requests to `/posts/1` (for post ID `1` or any other post ID), the problem clears itself up and both preload link tags (for `/api/user` and `/api/post/1/like`) are present in the HTML.
 
 ## Getting Started
