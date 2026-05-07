@@ -66,7 +66,7 @@ This repo contains 2 versions:
 
 ### Found issues
 
-- The component [HttpHeader](https://docs.solidjs.com/solid-start/reference/server/http-header) does not set page headers, neither in dev (`npm run dev`) nor in production mode (`npm run preview`). This seems to be the same bug reported in solidjs/solid-start/issues#1678.
+- The component [HttpHeader](https://docs.solidjs.com/solid-start/reference/server/http-header) does not set page headers, neither in dev (`npm run dev`) nor in production mode (`npm run preview`).
 
 - The [catch-all route](src/routes/(layout)/[[...404]].tsx), defined inside the `(layout)` directory, works correctly for `/non-existent` but not for `/posts/2/non-existent`.
 
