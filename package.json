@@ -5,7 +5,8 @@
     "dev": "vite dev",
     "build": "vite build",
     "start": "vite start",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@solidjs/meta": "^0.29.4",
@@ -13,6 +14,7 @@
     "@solidjs/start": "2.0.0-alpha.2",
     "@solidjs/vite-plugin-nitro-2": "^0.1.0",
     "@tailwindcss/vite": "^4.2.4",
+    "patch-package": "^8.0.1",
     "solid-js": "^1.9.5",
     "tailwindcss": "^4.2.4",
     "vite": "^7.0.0"
