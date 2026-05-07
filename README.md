@@ -54,13 +54,13 @@ This repo contains 2 versions:
 
 - The app defines two API routes for getting dynamic user-specific information:
     - [/api/user](src/routes/api/user.tsx) fetches user name and profile pic
-    - [/api/post/$postId/like](src/routes/api/post.$postId.like.tsx) fetches whether the user likes a given post
+    - [/api/post/$postId/like](src/routes/api/post/[postId]/like.tsx) fetches whether the user likes a given post
 - Both endpoints:
     - use cookies to get the user session,
     - use a 2-second setTimeout to simulate slow network loading, and
     - are accessed through [query](https://docs.solidjs.com/solid-router/reference/data-apis/query) wrapper from Solid Router for request deduplication.
-- The page's [_layout](src/routes/(layout).tsx) inserts a preload tag to the head of the page to preload `/api/user` when rendered on the server. On the client, it renders the [UserInfo](src/components/UserInfo.tsx) component which fetches `/api/user` reusing the already preloaded content.
-- Likewise, the page [_layout/posts/$postId](src/routes/(layout)/posts/[postId].tsx) inserts a preload tag to the head of the page to preload `/api/post/$postId/like` when rendered on the server. On the client, it renders the [UserLike](src/components/UserLike.tsx) component which fetches `/api/post/$postId/like` reusing the already preloaded content.
+- The page's [/(layout).tsx](src/routes/(layout).tsx) inserts a preload tag to the head of the page to preload `/api/user` when rendered on the server. On the client, it renders the [UserInfo](src/components/UserInfo.tsx) component which fetches `/api/user` reusing the already preloaded content.
+- Likewise, the page [/(layout)/posts/[postId].tsx](src/routes/(layout)/posts/[postId].tsx) inserts a preload tag to the head of the page to preload `/api/post/$postId/like` when rendered on the server. On the client, it renders the [UserLike](src/components/UserLike.tsx) component which fetches `/api/post/$postId/like` reusing the already preloaded content.
 - On client-side navigation, dynamic page data is loaded by route loaders, instead of relying on `<link rel="preload">` tags. This way, page prefetching on link hover does take into account the dynamic data.
 - All pages set the Cache-Control header to `public, max-age=600` using the [HttpHeader](https://docs.solidjs.com/solid-start/reference/server/http-header) component.
 
