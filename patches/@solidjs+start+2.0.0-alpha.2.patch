@@ -1,0 +1,48 @@
+diff --git a/node_modules/@solidjs/start/dist/server/server-functions-handler.js b/node_modules/@solidjs/start/dist/server/server-functions-handler.js
+index aef6ff9..1189491 100644
+--- a/node_modules/@solidjs/start/dist/server/server-functions-handler.js
++++ b/node_modules/@solidjs/start/dist/server/server-functions-handler.js
+@@ -54,7 +54,7 @@ export async function handleServerFunction(h3Event) {
+     const event = getFetchEvent(h3Event);
+     const request = event.request;
+     const serverReference = request.headers.get("X-Server-Id");
+-    const instance = request.headers.get("X-Server-Instance");
++    const instance = request.headers.get("X-Server-Instance") ?? "server-fn:-1";
+     const singleFlight = request.headers.has("X-Single-Flight");
+     const url = new URL(request.url);
+     let functionId;
+diff --git a/node_modules/@solidjs/start/dist/server/server-runtime.js b/node_modules/@solidjs/start/dist/server/server-runtime.js
+index ce3cb79..c3d8e59 100644
+--- a/node_modules/@solidjs/start/dist/server/server-runtime.js
++++ b/node_modules/@solidjs/start/dist/server/server-runtime.js
+@@ -93,11 +93,16 @@ function createRequest(base, id, instance, options) {
+     return fetch(base, {
+         method: "POST",
+         ...options,
+-        headers: {
+-            ...options.headers,
+-            "X-Server-Id": id,
+-            "X-Server-Instance": instance,
+-        },
++        // Use no-cors mode, to allow preloading in safari
++        mode: "no-cors",
++        // Include credentials to send cookies
++        credentials: "include",
++        // Do not add headers, so that browsers don't ignore preloads (because of difference in headers)
++        // headers: {
++        //     ...options.headers,
++        //     "X-Server-Id": id,
++        //     "X-Server-Instance": instance,
++        // },
+     });
+ }
+ const plugins = [
+@@ -113,7 +118,7 @@ const plugins = [
+     URLPlugin,
+ ];
+ async function fetchServerFunction(base, id, options, args) {
+-    const instance = `server-fn:${INSTANCE++}`;
++    const instance = `server-fn:${-1}`;
+     const response = await (args.length === 0
+         ? createRequest(base, id, instance, options)
+         : args.length === 1 && args[0] instanceof FormData

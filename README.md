@@ -48,23 +48,40 @@ This repo contains 2 versions:
 - One using classic API routes to get dynamic content, on the branch [main](https://github.com/NawfelBgh/solid-start-example-ssr-cacheable-preload-dynamic/tree/main), and
 - One using server functions to get them, on the branch [preload-server-functions](https://github.com/NawfelBgh/solid-start-example-ssr-cacheable-preload-dynamic/tree/preload-server-functions).
 
-## Classic API routes version
+## Server functions version
+
+### Limitations
+
+Today, SolidStart server function implementation has limitations that prevent using them with `<link rel="preload">` tags:
+
+- The server functions' server-side implementation only returns content when the header `X-Server-Instance` is sent.
+    - This repo works around this issue using [patch-package](https://www.npmjs.com/package/patch-package) with [the provided patch](patches/@solidjs+start+2.0.0-alpha.2.patch#L9)
+- The server functions' client-side implementation generates requests that are different from those created by `<link rel="preload">`, preventing browsers from reusing the preloaded content.
+    - The differences are:
+        - The added headers `X-Server-Id` and `X-Server-Instance`
+        - Not including credentials (Cookie), which is the default behavior for `fetch`.
+    - It also fetches in `cors` mode (the default mode for `fetch`), meaning that we must match it by using `<link rel="preload" crossorigin="use-credentials" as="fetch" href="...">`. This works perfectly fine in Chromium-based browsers and in Firefox. But [Safari does not reuse cross-origin preloads](https://stackoverflow.com/a/63814972).
+    - This repo works around these issues using [patch-package](https://www.npmjs.com/package/patch-package) with [the provided patch](patches/@solidjs+start+2.0.0-alpha.2.patch#L22)
+- Server functions do not provide a way to get their URLs with given parameters, which is needed to construct preload URLs. Currently, only the `serverFn.url` attribute is provided which only works for preloading GET server functions with no parameters.
+    - This repo works around this issue by [manually calling seroval to serialize parameters](src/utils/users.tsx#L53).
+
+This means that to use the SSR-cacheable-content/preload-dynamic-content pattern today, we must either use normal API routes, as demonstrated on the branch [main](https://github.com/NawfelBgh/solid-start-example-ssr-cacheable-preload-dynamic/tree/main), or turn to fragile workarounds to implement it using server functions. This repo aims to document the limitations and appeal to SolidStart maintainers to address them in a future release.
 
 ### Implementation details
 
-- The app defines two API routes for getting dynamic user-specific information:
-    - [/api/user](src/routes/api/user.tsx) fetches user name and profile pic
-    - [/api/post/$postId/like](src/routes/api/post/[postId]/like.tsx) fetches whether the user likes a given post
+- The app [defines](src/utils/users.tsx) two server functions for getting dynamic user-specific information:
+    - `fetchUser()` fetches user name and profile pic
+    - `fetchUserLike(postId: string)` fetches whether the user likes a given post
 - Both endpoints:
     - use cookies to get the user session,
     - use a 2-second setTimeout to simulate slow network loading, and
     - are accessed through [query](https://docs.solidjs.com/solid-router/reference/data-apis/query) wrapper from Solid Router for request deduplication.
-- The page's [/(layout).tsx](src/routes/(layout).tsx) inserts a preload tag to the head of the page to preload `/api/user` when rendered on the server. On the client, it renders the [UserInfo](src/components/UserInfo.tsx) component which fetches `/api/user` reusing the already preloaded content.
-- Likewise, the page [/(layout)/posts/[postId].tsx](src/routes/(layout)/posts/[postId].tsx) inserts a preload tag to the head of the page to preload `/api/post/$postId/like` when rendered on the server. On the client, it renders the [UserLike](src/components/UserLike.tsx) component which fetches `/api/post/$postId/like` reusing the already preloaded content.
-- On client-side navigation, dynamic page data is loaded by route loaders, instead of relying on `<link rel="preload">` tags. This way, page prefetching on link hover does take into account the dynamic data.
+- The page's [/(layout).tsx](src/routes/(layout).tsx) inserts a preload tag to the head of the page to preload `fetchUser` when rendered on the server. On the client, it renders the [UserInfo](src/components/UserInfo.tsx) component which calls `fetchUser` reusing the already preloaded content.
+- Likewise, the page [/(layout)/posts/[postId].tsx](src/routes/(layout)/posts/[postId].tsx) inserts a preload tag to the head of the page to preload `fetchUserLike` when rendered on the server. On the client, it renders the [UserLike](src/components/UserLike.tsx) component which calls `fetchUserLike` reusing the already preloaded content.
+- On client-side navigation, dynamic page data is loaded by route preloaders, instead of relying on `<link rel="preload">` tags. This way, page prefetching on link hover does take into account the dynamic data.
 - All pages set the Cache-Control header to `public, max-age=600` using the [HttpHeader](https://docs.solidjs.com/solid-start/reference/server/http-header) component.
 
-### Found issues
+### Other issues found
 
 - The component [HttpHeader](https://docs.solidjs.com/solid-start/reference/server/http-header) does not set page headers, neither in dev (`npm run dev`) nor in production mode (`npm run preview`).
 
