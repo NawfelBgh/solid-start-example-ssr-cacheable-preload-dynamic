@@ -1,8 +1,8 @@
-import { createAsync } from "@solidjs/router";
+import { createMemo } from "solid-js";
 import { userQuery } from "~/utils/users";
 
 export default function UserInfo() {
-  const user = createAsync(() => userQuery());
+  const user = createMemo(() => userQuery(), { ssrSource: 'client' });
   return (
     <>
       <img src={user()?.profilePic} alt={user()?.name} />

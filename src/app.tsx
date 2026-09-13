@@ -1,23 +1,20 @@
-import { MetaProvider, Title } from "@solidjs/meta";
-import { Router } from "@solidjs/router";
-import { FileRoutes } from "@solidjs/start/router";
-import { Suspense, ErrorBoundary } from "solid-js";
+import { Title } from "@solidjs/meta";
+import { Errored, Loading } from "solid-js";
+import { Router } from "./router";
 import { DefaultCatchBoundary } from "./components/DefaultCatchBoundary";
 import "./app.css";
 
 export default function App() {
   return (
-    <Router
-      root={(props) => (
-        <MetaProvider>
-          <Title>SolidStart - SSR Cacheable Preload</Title>
-          <ErrorBoundary fallback={(err) => <DefaultCatchBoundary error={err} />}>
-            <Suspense>{props.children}</Suspense>
-          </ErrorBoundary>
-        </MetaProvider>
+    <Router>
+      {(props) => (
+        <>
+          <Title>Solid 2 - SSR Cacheable Preload</Title>
+          <Errored fallback={(err) => <DefaultCatchBoundary error={err() as Error} />}>
+            <Loading>{props.children}</Loading>
+          </Errored>
+        </>
       )}
-    >
-      <FileRoutes />
     </Router>
   );
 }

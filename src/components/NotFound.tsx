@@ -1,6 +1,6 @@
-import { A } from "@solidjs/router";
+import { Element } from "solid-js";
 
-export function NotFound(props: { children?: any }) {
+export function NotFound(props: { children?: Element }) {
   return (
     <div class="space-y-2 p-2">
       <div class="text-gray-600 dark:text-gray-400">
@@ -13,12 +13,12 @@ export function NotFound(props: { children?: any }) {
         >
           Go back
         </button>
-        <A
+        <a
           href="/"
           class="bg-cyan-600 text-white px-2 py-1 rounded-sm uppercase font-black text-sm"
         >
           Start Over
-        </A>
+        </a>
       </p>
     </div>
   );

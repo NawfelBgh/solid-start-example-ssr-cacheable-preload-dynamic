@@ -1,25 +1,29 @@
 {
-  "name": "solid-start-example-ssr-cacheable-preload-dynamic",
+  "name": "solid-2-example-ssr-cacheable-preload-dynamic",
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
+    "dev": "vite",
     "build": "vite build",
-    "start": "vite start",
-    "preview": "vite preview",
+    "serve": "vite preview",
     "postinstall": "patch-package"
   },
   "dependencies": {
-    "@solidjs/meta": "^0.29.4",
-    "@solidjs/router": "^0.15.0",
-    "@solidjs/start": "2.0.0-alpha.2",
-    "@solidjs/vite-plugin-nitro-2": "^0.1.0",
-    "@tailwindcss/vite": "^4.2.4",
-    "patch-package": "^8.0.1",
-    "solid-js": "^1.9.5",
-    "tailwindcss": "^4.2.4",
-    "vite": "^7.0.0"
+    "@solidjs/meta": "1.0.0-next.2",
+    "@solidjs/router": "2.0.0-next.24",
+    "@solidjs/vite-plugin": "3.0.0-next.43",
+    "@solidjs/web": "2.0.0-rc.8",
+    "@tailwindcss/vite": "4.2.4",
+    "filesystem-routing": "0.3.1",
+    "solid-js": "2.0.0-rc.8",
+    "tailwindcss": "4.2.4",
+    "vite": "^8.0.0"
   },
   "engines": {
     "node": ">=22"
+  },
+  "devDependencies": {
+    "@types/node": "^26.5.1",
+    "patch-package": "^8.0.1",
+    "typescript": "^7.0.2"
   }
 }

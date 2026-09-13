@@ -1,12 +1,8 @@
-import { createAsync } from "@solidjs/router";
-import { Show } from "solid-js";
+import { createMemo, Show } from "solid-js";
 import { userLikeQuery } from "~/utils/users";
 
 export default function UserLike(props: { postId: string }) {
-  const isLiked = createAsync(() => {
-    console.log('createAsync - userLikeQuery', props.postId);
-    return userLikeQuery(props.postId)
-  });
+  const isLiked = createMemo(() => userLikeQuery(props.postId), { ssrSource: "client" });
 
   return <Show when={isLiked()} fallback="♡">❤️</Show>;
 }

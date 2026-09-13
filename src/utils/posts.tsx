@@ -1,4 +1,5 @@
 import { query } from "@solidjs/router";
+import { GET } from "@solidjs/web/server-functions";
 
 export type PostType = {
   id: string
@@ -6,7 +7,7 @@ export type PostType = {
   body: string
 }
 
-export const fetchPosts = query(async () => {
+export const fetchPosts = query(GET(async function fetchPosts(): Promise<PostType[]> {
   "use server";
   console.info("Fetching posts...");
   const res = await fetch("https://jsonplaceholder.typicode.com/posts");
@@ -16,9 +17,9 @@ export const fetchPosts = query(async () => {
 
   const posts = await res.json();
   return (posts as Array<PostType>).slice(0, 10);
-}, "posts");
+}), "posts");
 
-export const fetchPost = query(async (postId: string) => {
+export const fetchPost = query(GET(async function fetchPost(postId: string): Promise<PostType> {
   "use server";
   console.info(`Fetching post with id ${postId}...`);
   const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`);
@@ -31,4 +32,4 @@ export const fetchPost = query(async (postId: string) => {
 
   const post = await res.json();
   return post as PostType;
-}, "post");
+}), "post");

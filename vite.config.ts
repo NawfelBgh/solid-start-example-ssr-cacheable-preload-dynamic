@@ -1,12 +1,22 @@
+import { fileRoutes } from "filesystem-routing/vite";
 import { defineConfig } from "vite";
-import { nitroV2Plugin as nitro } from "@solidjs/vite-plugin-nitro-2";
+import solid from "@solidjs/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 
-import { solidStart } from "@solidjs/start/config";
-
 export default defineConfig({
-  plugins: [solidStart(),
-    nitro(),
-    tailwindcss()
-  ]
+  plugins: [
+    solid({
+      start: true,
+      ssr: true,
+      serverFunctions: true,
+      extensions: [".jsx", ".tsx"],
+    }),
+    fileRoutes({ types: true }),
+    tailwindcss(),
+  ],
+  resolve: {
+    alias: {
+      "~": "/src",
+    },
+  },
 });

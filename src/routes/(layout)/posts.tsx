@@ -1,11 +1,9 @@
-import { A } from "@solidjs/router";
-import { createAsync } from "@solidjs/router";
-import { For, JSXElement } from "solid-js";
-import { fetchPosts } from "~/utils/posts";
 import { useIsRouting } from "@solidjs/router";
+import { createMemo, Element, For } from "solid-js";
+import { fetchPosts } from "~/utils/posts";
 
-export default function PostsLayout(props: { children: JSXElement }) {
-  const posts = createAsync(() => fetchPosts());
+export default function PostsLayout(props: { children: Element }) {
+  const posts = createMemo(() => fetchPosts());
   const isRouting = useIsRouting();
 
   return (
@@ -13,20 +11,18 @@ export default function PostsLayout(props: { children: JSXElement }) {
       <ul class="list-disc pl-4">
         <For each={posts()}>
           {(post) => <li class="whitespace-nowrap">
-            <A
+            <a
               href={`/posts/${post.id}`}
               class="block py-1 text-blue-800 hover:text-blue-600"
-              activeClass="text-black font-bold"
-              preload
             >
               <div>{post.title.substring(0, 20)}</div>
-            </A>
+            </a>
           </li>}
         </For>
       </ul>
       <hr />
-      <div classList={{ "opacity-50": isRouting() }}>
-          {props.children}
+      <div class={{ "opacity-50": isRouting() }}>
+        {props.children}
       </div>
     </div>
   );
