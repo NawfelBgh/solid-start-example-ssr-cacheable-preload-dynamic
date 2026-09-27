@@ -1,6 +1,6 @@
 import { Link } from "@solidjs/meta";
 import { query } from "@solidjs/router";
-import { GET } from "@solidjs/web/server-functions";
+import { GET, serverFunctionUrl } from "@solidjs/web/server-functions";
 
 export type UserType = {
   id: number
@@ -26,7 +26,7 @@ export const fetchUser = GET(async function fetchUser(): Promise<UserType> {
 export const userQuery = query(fetchUser, "user");
 
 export function UserQueryPreloadLink() {
-  return <Link rel="preload" href={serverFunctionDataHref(fetchUser.id)} as="fetch" crossorigin />;
+  return <Link rel="preload" href={serverFunctionUrl(fetchUser)} as="fetch" crossorigin />;
 }
 
 const fetchUserLike = GET(async function fetchUserLike(postId: string): Promise<boolean> {
@@ -43,15 +43,5 @@ const fetchUserLike = GET(async function fetchUserLike(postId: string): Promise<
 export const userLikeQuery = query(fetchUserLike, "userLike");
 
 export function UserLikeQueryPreloadLink(props: { postId: string }) {
-  return <Link rel="preload" href={serverFunctionDataHref(fetchUserLike.id, [props.postId])} as="fetch" crossorigin />;
-}
-
-// Note: The reason I'm not using `serverFunctionUrl` from "@solidjs/web/server-functions" is that it does not returns the same url as the one used by the client
-// It omits ...data... from the URL.
-// Although the given URL works, it is useless for prefetching since it's not the same URL used by the client 
-export function serverFunctionDataHref(id: string, args: unknown[] = []) {
-  const address = `/_server/data/${encodeURIComponent(id)}`;
-  return args.length
-    ? `${address}?args=${encodeURIComponent(JSON.stringify(args))}`
-    : address;
+  return <Link rel="preload" href={serverFunctionUrl(fetchUserLike, props.postId)} as="fetch" crossorigin />;
 }

@@ -45,8 +45,7 @@ If the server takes a long time to respond to the preloading fetch, and the scri
 
 ## Solid 2 server functions as a native preload target
 
-- The client GET transport fetches `/_server/data/<id>?args=<json>`, and adds an `X-Server-Function-Instance` header to every request (it keeps client calls consistent with the SSR-rendered page). A `<link rel="preload" as="fetch">` cannot set custom headers, so without intervention the preload request and the real call differ and the preload response is not reused.
-- This repo patches `@solidjs/web@2.0.0-rc.8` with [`patch-package`](https://www.npmjs.com/package/patch-package) — the `postinstall` script applies [`patches/@solidjs+web+2.0.0-rc.8.patch`](patches/@solidjs+web+2.0.0-rc.8.patch), which drops the instance header from the client transport and neutralizes it server-side (`instance: "noop"`). Preloads and real calls then share the exact same URL and headers, so the browser HTTP cache reuses the preloaded response for the later `fetch` from the script.
+- The client GET transport fetches `/_server/data/<id>?args=<json>` with no per-instance transport header, so a `<link rel="preload" as="fetch">` can address it exactly. Preload requests and real calls therefore share the same URL and headers, and the browser HTTP cache reuses the preloaded response for the later `fetch` from the script.
 - The server responds based on the URL shape alone (`/_server/data/<id>` is the scripted transport address), so preload requests are served identically to real calls.
 - Function ids are stable (`GET(fn).id`) and arguments use the same JSON-args encoding the transport produces, so preload URLs can be built ahead of time with [`serverFunctionDataHref`](src/utils/users.tsx) — no full serialization library needed.
 
@@ -73,7 +72,7 @@ npm install
 npm run dev
 ```
 
-This starts your app in development mode, rebuilding assets on file changes. The `postinstall` script applies the `@solidjs/web` patch automatically.
+This starts your app in development mode, rebuilding assets on file changes.
 
 ## Build
 

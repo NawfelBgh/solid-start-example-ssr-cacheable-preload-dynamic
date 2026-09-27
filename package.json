@@ -4,17 +4,16 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview",
-    "postinstall": "patch-package"
+    "serve": "vite preview"
   },
   "dependencies": {
     "@solidjs/meta": "1.0.0-next.2",
-    "@solidjs/router": "2.0.0-next.24",
-    "@solidjs/vite-plugin": "3.0.0-next.43",
-    "@solidjs/web": "2.0.0-rc.8",
+    "@solidjs/router": "2.0.0-next.30",
+    "@solidjs/vite-plugin": "3.0.0-next.46",
+    "@solidjs/web": "2.0.0-rc.10",
     "@tailwindcss/vite": "4.2.4",
-    "filesystem-routing": "0.3.1",
-    "solid-js": "2.0.0-rc.8",
+    "filesystem-routing": "0.4.0",
+    "solid-js": "2.0.0-rc.10",
     "tailwindcss": "4.2.4",
     "vite": "^8.0.0"
   },
@@ -23,7 +22,6 @@
   },
   "devDependencies": {
     "@types/node": "^26.5.1",
-    "patch-package": "^8.0.1",
     "typescript": "^7.0.2"
   }
 }
